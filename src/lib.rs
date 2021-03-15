@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote;
-use syn::{self, Block, ItemFn};
+use syn::{self, Attribute, Block, ItemFn};
 
 #[proc_macro_attribute]
 pub fn trace(_attr: TokenStream, item: TokenStream) -> TokenStream {
@@ -18,10 +18,23 @@ pub fn trace(_attr: TokenStream, item: TokenStream) -> TokenStream {
         println!("out: {}", stringify!(#ident));
         ret
     }};
-
     *ast.block = body;
+
+    let mut attrs = ast.attrs;
+    attrs.retain(should_retain);
+    ast.attrs = attrs;
+
     let gen = quote::quote! {
         #ast
     };
     gen.into()
+}
+
+fn should_retain(attr: &Attribute) -> bool {
+    if let Ok(m) = attr.parse_meta() {
+        let p = m.path();
+        !(p.is_ident("ignore") || p.is_ident("should_panic"))
+    } else {
+        true
+    }
 }
