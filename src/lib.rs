@@ -3,22 +3,24 @@ use quote;
 use syn::{self, Attribute, Block, ItemFn};
 
 #[proc_macro_attribute]
-pub fn trace(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn deps(attr: TokenStream, item: TokenStream) -> TokenStream {
     let mut ast = syn::parse_macro_input!(item as ItemFn);
     //let ident = &ast.ident;
-    let ident = "fake_func_name";
+    let ident = "fake_name";
 
-    let body = ast.block.as_ref();
-    let body: Block = syn::parse_quote! {{
+    let body_orig = ast.block.as_ref();
+    let body_new: Block = syn::parse_quote! {{
+        struct Ticket;
+        impl Drop for Ticket {
+            fn drop(&mut self) {
+                println!("out: {}", stringify!(#ident));
+            }
+        }
+        let t = Ticket;
         println!("in: {}", stringify!(#ident));
-
-        let body = || #body;
-        let ret = body();
-
-        println!("out: {}", stringify!(#ident));
-        ret
+        #body_orig
     }};
-    *ast.block = body;
+    *ast.block = body_new;
 
     let mut attrs = ast.attrs;
     attrs.retain(should_retain);
