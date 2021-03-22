@@ -42,9 +42,9 @@ pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
 //       word. For example, today's TokenStream presents "abc.def" and "abc .def" in the same way. This TODO will
 //       be revisited once the functions get supported (https://doc.rust-lang.org/proc_macro/struct.Span.html).
 fn verify_args(args: proc_macro2::TokenStream) -> Vec<String> {
-    let mut illegal_str = None;
     let mut tokens = Vec::new();
 
+    let mut illegal_str = None;
     for arg in args.into_iter() {
         tokens.push(arg.to_string());
         match arg {
@@ -63,9 +63,31 @@ fn verify_args(args: proc_macro2::TokenStream) -> Vec<String> {
             }
         }
     }
-
     if let Some(x) = illegal_str {
-        panic!("Illegal format: {}", x);
+        panic!("Illegal string: {}", x);
+    }
+
+    if tokens.len() == 0 {
+        panic!("Illegal format: Missing target name");
+    } else {
+        let mut tokiter = tokens.iter();
+        let icolon = tokiter.position(|x| x == ":");
+        if let Some(i) = icolon {
+            if tokiter.position(|x| x == ":").is_some() {
+                panic!("Illegal format: Separator ':' should appear at most once");
+            }
+            if i == 0 {
+                panic!("Illegal format: Missing target name");
+            } else if i == tokens.len() - 1 {
+                panic!("Illegal format: Missing prereq names");
+            } else if i != 1 {
+                panic!("Illegal format: Target name should appear only once");
+            }
+        } else {
+            if tokens.len() != 1 {
+                panic!("Illegal format: Target name should appear only once");
+            }
+        }
     }
 
     tokens
