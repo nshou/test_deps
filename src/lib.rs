@@ -3,9 +3,11 @@ use quote;
 use syn::{self, Attribute, Block, ItemFn};
 
 #[proc_macro_attribute]
-pub fn deps(attr: TokenStream, item: TokenStream) -> TokenStream {
-    let mut ast = syn::parse_macro_input!(item as ItemFn);
-    //let ident = &ast.ident;
+pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
+    let args = proc_macro2::TokenStream::from(args);
+    let input = proc_macro2::TokenStream::from(input);
+
+    let mut ast: ItemFn = syn::parse2(input).unwrap();
     let ident = "fake_name";
 
     let body_orig = ast.block.as_ref();
