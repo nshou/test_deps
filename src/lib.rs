@@ -1,5 +1,6 @@
 use proc_macro::TokenStream;
 use quote;
+use std::collections::HashMap;
 use syn::{self, Attribute, Block, ItemFn};
 
 #[proc_macro_attribute]
@@ -88,6 +89,15 @@ fn verify_args(args: proc_macro2::TokenStream) -> Vec<String> {
                 panic!("Illegal format: Target name should appear only once");
             }
         }
+    }
+    let mut counts = HashMap::new();
+    for i in 1..tokens.len() {
+        if counts.insert(&tokens[i], ()).is_some() {
+            panic!("Illegal format: Duplicated prereq {}", tokens[i]);
+        }
+    }
+    if counts.contains_key(&tokens[0]) {
+        panic!("Illegal format: {} appears in both target and prereq");
     }
 
     tokens
