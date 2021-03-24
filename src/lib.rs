@@ -147,4 +147,16 @@ mod tests {
             );
         }
     }
+
+    #[test]
+    #[should_panic(expected = "Illegal string: 0a")]
+    fn invalid_name_starts_with_digit() {
+        verify_args_text(proc_macro2::TokenStream::from_str("0a").unwrap());
+    }
+
+    #[test]
+    #[should_panic(expected = "Illegal string: !")]
+    fn invalid_name_contains_special_char() {
+        verify_args_text(proc_macro2::TokenStream::from_str("a!").unwrap());
+    }
 }
