@@ -9,7 +9,7 @@ pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
     let input = proc_macro2::TokenStream::from(input);
 
     let arg_tokens = verify_args_text(args);
-    verify_args_format(&arg_tokens);
+    let (target, prereqs) = verify_args_format(&arg_tokens);
 
     let mut ast: ItemFn = syn::parse2(input).unwrap();
     let ident = "fake_name";
@@ -71,7 +71,7 @@ fn verify_args_text(args: proc_macro2::TokenStream) -> Vec<String> {
     tokens
 }
 
-fn verify_args_format(tokens: &Vec<String>) {
+fn verify_args_format(tokens: &Vec<String>) -> (&String, &[String]) {
     if tokens.len() == 0 {
         panic!("Illegal format: Missing target name");
     } else {
@@ -103,6 +103,11 @@ fn verify_args_format(tokens: &Vec<String>) {
     if counts.contains_key(&tokens[0]) {
         panic!("Illegal format: {} appears in both target and prereq");
     }
+
+    let mut sepiter = tokens.split(|s| s == ":");
+    let target = &sepiter.next().unwrap()[0];
+    let prereqs = sepiter.next().unwrap();
+    (target, prereqs)
 }
 
 fn should_retain(attr: &Attribute) -> bool {
