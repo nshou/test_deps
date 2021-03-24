@@ -8,7 +8,8 @@ pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
     let args = proc_macro2::TokenStream::from(args);
     let input = proc_macro2::TokenStream::from(input);
 
-    let arg_tokens = verify_args(args);
+    let arg_tokens = verify_args_text(args);
+    verify_args_format(&arg_tokens);
 
     let mut ast: ItemFn = syn::parse2(input).unwrap();
     let ident = "fake_name";
@@ -42,9 +43,8 @@ pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
 //       Due to the restriction, there is no way to distinguish an isolated punctuation from one consisting of a
 //       word. For example, today's TokenStream presents "abc.def" and "abc .def" in the same way. This TODO will
 //       be revisited once the functions get supported (https://doc.rust-lang.org/proc_macro/struct.Span.html).
-fn verify_args(args: proc_macro2::TokenStream) -> Vec<String> {
+fn verify_args_text(args: proc_macro2::TokenStream) -> Vec<String> {
     let mut tokens = Vec::new();
-
     let mut illegal_str = None;
     for arg in args.into_iter() {
         tokens.push(arg.to_string());
@@ -68,6 +68,10 @@ fn verify_args(args: proc_macro2::TokenStream) -> Vec<String> {
         panic!("Illegal string: {}", x);
     }
 
+    tokens
+}
+
+fn verify_args_format(tokens: &Vec<String>) {
     if tokens.len() == 0 {
         panic!("Illegal format: Missing target name");
     } else {
@@ -99,8 +103,6 @@ fn verify_args(args: proc_macro2::TokenStream) -> Vec<String> {
     if counts.contains_key(&tokens[0]) {
         panic!("Illegal format: {} appears in both target and prereq");
     }
-
-    tokens
 }
 
 fn should_retain(attr: &Attribute) -> bool {
