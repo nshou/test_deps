@@ -113,3 +113,38 @@ fn should_retain(attr: &Attribute) -> bool {
         true
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::str::FromStr;
+
+    #[test]
+    fn valid_names() {
+        let names = [
+            "a",
+            "ab",
+            "_",
+            "__",
+            "a_",
+            "_a",
+            "_a_",
+            "a_a",
+            "a0",
+            "a0a",
+            "_0",
+            "_0_",
+            "a0_",
+            "a_0",
+            "_a0",
+            "_0a",
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_",
+        ];
+        for name in &names {
+            assert_eq!(
+                vec![String::from(*name)],
+                verify_args_text(proc_macro2::TokenStream::from_str(name).unwrap())
+            );
+        }
+    }
+}
