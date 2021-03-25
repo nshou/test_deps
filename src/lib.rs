@@ -12,18 +12,17 @@ pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
     let (target, prereqs) = verify_args_format(&arg_tokens);
 
     let mut ast: ItemFn = syn::parse2(input).unwrap();
-    let ident = "fake_name";
 
     let body_orig = ast.block.as_ref();
     let body_new: Block = syn::parse_quote! {{
         struct Ticket;
         impl Drop for Ticket {
             fn drop(&mut self) {
-                println!("out: {}", stringify!(#ident));
+                println!("out: target:{}, prereqs:{:?}", stringify!(#target), [#(#prereqs),*]);
             }
         }
         let t = Ticket;
-        println!("in: {}", stringify!(#ident));
+        println!("out: target:{}, prereqs:{:?}", stringify!(#target), [#(#prereqs),*]);
         #body_orig
     }};
     *ast.block = body_new;
@@ -101,7 +100,10 @@ fn verify_args_format(tokens: &Vec<String>) -> (&String, &[String]) {
         }
     }
     if counts.contains_key(&tokens[0]) {
-        panic!("Illegal format: {} appears in both target and prereq");
+        panic!(
+            "Illegal format: {} appears in both target and prereq",
+            tokens[0]
+        );
     }
 
     let mut sepiter = tokens.split(|s| s == ":");
