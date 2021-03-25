@@ -18,11 +18,15 @@ pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
         struct Ticket;
         impl Drop for Ticket {
             fn drop(&mut self) {
-                println!("out: target:{}, prereqs:{:?}", stringify!(#target), [#(#prereqs),*]);
+                let target = String::from(#target);
+                let prereqs: Vec<String> = vec![#(String::from(#prereqs)),*];
+                println!("out: target:{}, prereqs:{:?}", target, prereqs);
             }
         }
         let t = Ticket;
-        println!("out: target:{}, prereqs:{:?}", stringify!(#target), [#(#prereqs),*]);
+        let target = String::from(#target);
+        let prereqs: Vec<String> = vec![#(String::from(#prereqs)),*];
+        println!("in: target:{}, prereqs:{:?}", target, prereqs);
         #body_orig
     }};
     *ast.block = body_new;
@@ -108,7 +112,7 @@ fn verify_args_format(tokens: &Vec<String>) -> (&String, &[String]) {
 
     let mut sepiter = tokens.split(|s| s == ":");
     let target = &sepiter.next().unwrap()[0];
-    let prereqs = sepiter.next().unwrap();
+    let prereqs = sepiter.next().unwrap_or(&[]);
     (target, prereqs)
 }
 
