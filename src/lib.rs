@@ -1,7 +1,22 @@
+use lazy_static::lazy_static;
 use proc_macro::TokenStream;
 use quote;
 use std::collections::HashMap;
+use std::sync::{Arc, Condvar, Mutex};
 use syn::{self, Attribute, Block, ItemFn};
+
+lazy_static! {
+    static ref TEST_DEPS_REG: Mutex<(
+        HashMap<String, ()>,
+        HashMap<String, (Vec<String>, Arc<Condvar>)>,
+        HashMap<String, Vec<String>>
+    )> = {
+        let completed = HashMap::new();
+        let waitlist = HashMap::new();
+        let r_waitlist = HashMap::new();
+        Mutex::new((completed, waitlist, r_waitlist))
+    };
+}
 
 #[proc_macro_attribute]
 pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
@@ -19,14 +34,54 @@ pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
         impl Drop for Ticket {
             fn drop(&mut self) {
                 let target = String::from(#target);
-                let prereqs: Vec<String> = vec![#(String::from(#prereqs)),*];
-                println!("out: target:{}, prereqs:{:?}", target, prereqs);
+                let mut reg = TEST_DEPS_REG.lock().unwrap();
+                if reg.0.insert(target, ()).is_some() { //reg.0 = completed
+                    panic!("Illegal dependencies: Duplicated target {}", target);
+                }
+                if let Some(wl) = reg.2.get(target) { //reg.2 = r_waitlist
+                    for w in &wl {
+                        if let Some((prq, cv)) = reg.1.get_mut(w) { //reg.1 = waitlist
+                            let curlen = prq.len();
+                            prq.retain(|&n| n != target);
+                            if curlen - prq.len() != 1 {
+                                panic!("Runtime error: Discrepancy between waitlist and reverse waitlist on {} that depends on {}", w, target);
+                            }
+                            if prq.is_empty() {
+                                cv.notify_one();
+                            }
+                        } else {
+                            panic!("Runtime error: Discrepancy between waitlist and reverse waitlist on {} that depends on {}", w, target);
+                        }
+                    }
+                }
             }
         }
         let t = Ticket;
-        let target = String::from(#target);
-        let prereqs: Vec<String> = vec![#(String::from(#prereqs)),*];
-        println!("in: target:{}, prereqs:{:?}", target, prereqs);
+        {
+            let target = String::from(#target);
+            let mut prereqs: Vec<String> = vec![#(String::from(#prereqs)),*];
+            let mut reg = TEST_DEPS_REG.lock().unwrap();
+            prereqs.retain(|&n| !reg.0.contains_key(n)); //reg.0 = completed
+            if !prereqs.is_empty() {
+                let cv = std::sync::Arc::new(std::sync::Condvar::new());
+                let cv2 = cv.clone();
+                if reg.1.insert(target, (prereqs, cv2)).is_some() { //reg.1 = waitlist
+                    panic!("Illegal dependencies: Duplicated target {}", target);
+                }
+                for prereq in &prereqs {
+                    if let Some(n) = reg.2.get_mut(prereq) { //reg.2 = r_waitlist
+                        // Skip duplication check here bc it's already done above
+                        (*n).push(target);
+                    } else {
+                        reg.2.insert(prereq, vec![target]);
+                    }
+                }
+                //TODO: no unwrap here
+                while !(*reg).1.get(target).unwrap().0.is_empty() { //~~.0 = prereqs vec
+                    reg = cv.wait(reg).unwrap();
+                }
+            }
+        }
         #body_orig
     }};
     *ast.block = body_new;
