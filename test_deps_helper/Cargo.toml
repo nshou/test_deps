@@ -1,8 +1,5 @@
-[lib]
-proc-macro = true
-
 [package]
-name = "test_deps"
+name = "test_deps_helper"
 version = "0.1.0"
 authors = ["nshou <nshou@coronocoya.net>"]
 edition = "2018"
@@ -10,8 +7,4 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-syn = {version = "1.0", features = ["full"]}
-quote = "1.0"
-proc-macro2 = "1.0"
 lazy_static = "1.4"
-test_deps_helper = {path = "test_deps_helper"}
