@@ -19,13 +19,13 @@ pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
         impl Drop for Ticket {
             fn drop(&mut self) {
                 let target = String::from(#target);
-                test_deps::target_completed(target).unwrap();
+                test_deps::target_completed(&target).unwrap();
             }
         }
         let t = Ticket;
         {
             let prereqs: Vec<String> = vec![#(String::from(#prereqs)),*];
-            test_deps::ensure_prereqs(prereqs).unwrap();
+            test_deps::ensure_prereqs(&prereqs).unwrap();
         }
         #body_orig
     }};
