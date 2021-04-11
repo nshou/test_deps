@@ -1,12 +1,14 @@
 use test_deps::deps;
-static mut ROOT: bool = false;
+static mut LEAF: [bool; 101] = [false; 101];
 
 #[test]
 #[deps(T_000)]
 fn fork_000() {
     unsafe {
-        assert!(!ROOT);
-        ROOT = true;
+        for l in &LEAF[1..] {
+            assert!(!l);
+        }
+        LEAF[0] = true;
     }
 }
 
@@ -14,7 +16,8 @@ fn fork_000() {
 #[deps(T_001: T_000)]
 fn fork_001() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[1] = true;
     }
 }
 
@@ -22,7 +25,8 @@ fn fork_001() {
 #[deps(T_002: T_000)]
 fn fork_002() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[2] = true;
     }
 }
 
@@ -30,7 +34,8 @@ fn fork_002() {
 #[deps(T_003: T_000)]
 fn fork_003() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[3] = true;
     }
 }
 
@@ -38,7 +43,8 @@ fn fork_003() {
 #[deps(T_004: T_000)]
 fn fork_004() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[4] = true;
     }
 }
 
@@ -46,7 +52,8 @@ fn fork_004() {
 #[deps(T_005: T_000)]
 fn fork_005() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[5] = true;
     }
 }
 
@@ -54,7 +61,8 @@ fn fork_005() {
 #[deps(T_006: T_000)]
 fn fork_006() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[6] = true;
     }
 }
 
@@ -62,7 +70,8 @@ fn fork_006() {
 #[deps(T_007: T_000)]
 fn fork_007() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[7] = true;
     }
 }
 
@@ -70,7 +79,8 @@ fn fork_007() {
 #[deps(T_008: T_000)]
 fn fork_008() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[8] = true;
     }
 }
 
@@ -78,7 +88,8 @@ fn fork_008() {
 #[deps(T_009: T_000)]
 fn fork_009() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[9] = true;
     }
 }
 
@@ -86,7 +97,8 @@ fn fork_009() {
 #[deps(T_010: T_000)]
 fn fork_010() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[10] = true;
     }
 }
 
@@ -94,7 +106,8 @@ fn fork_010() {
 #[deps(T_011: T_000)]
 fn fork_011() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[11] = true;
     }
 }
 
@@ -102,7 +115,8 @@ fn fork_011() {
 #[deps(T_012: T_000)]
 fn fork_012() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[12] = true;
     }
 }
 
@@ -110,7 +124,8 @@ fn fork_012() {
 #[deps(T_013: T_000)]
 fn fork_013() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[13] = true;
     }
 }
 
@@ -118,7 +133,8 @@ fn fork_013() {
 #[deps(T_014: T_000)]
 fn fork_014() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[14] = true;
     }
 }
 
@@ -126,7 +142,8 @@ fn fork_014() {
 #[deps(T_015: T_000)]
 fn fork_015() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[15] = true;
     }
 }
 
@@ -134,7 +151,8 @@ fn fork_015() {
 #[deps(T_016: T_000)]
 fn fork_016() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[16] = true;
     }
 }
 
@@ -142,7 +160,8 @@ fn fork_016() {
 #[deps(T_017: T_000)]
 fn fork_017() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[17] = true;
     }
 }
 
@@ -150,7 +169,8 @@ fn fork_017() {
 #[deps(T_018: T_000)]
 fn fork_018() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[18] = true;
     }
 }
 
@@ -158,7 +178,8 @@ fn fork_018() {
 #[deps(T_019: T_000)]
 fn fork_019() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[19] = true;
     }
 }
 
@@ -166,7 +187,8 @@ fn fork_019() {
 #[deps(T_020: T_000)]
 fn fork_020() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[20] = true;
     }
 }
 
@@ -174,7 +196,8 @@ fn fork_020() {
 #[deps(T_021: T_000)]
 fn fork_021() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[21] = true;
     }
 }
 
@@ -182,7 +205,8 @@ fn fork_021() {
 #[deps(T_022: T_000)]
 fn fork_022() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[22] = true;
     }
 }
 
@@ -190,7 +214,8 @@ fn fork_022() {
 #[deps(T_023: T_000)]
 fn fork_023() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[23] = true;
     }
 }
 
@@ -198,7 +223,8 @@ fn fork_023() {
 #[deps(T_024: T_000)]
 fn fork_024() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[24] = true;
     }
 }
 
@@ -206,7 +232,8 @@ fn fork_024() {
 #[deps(T_025: T_000)]
 fn fork_025() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[25] = true;
     }
 }
 
@@ -214,7 +241,8 @@ fn fork_025() {
 #[deps(T_026: T_000)]
 fn fork_026() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[26] = true;
     }
 }
 
@@ -222,7 +250,8 @@ fn fork_026() {
 #[deps(T_027: T_000)]
 fn fork_027() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[27] = true;
     }
 }
 
@@ -230,7 +259,8 @@ fn fork_027() {
 #[deps(T_028: T_000)]
 fn fork_028() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[28] = true;
     }
 }
 
@@ -238,7 +268,8 @@ fn fork_028() {
 #[deps(T_029: T_000)]
 fn fork_029() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[29] = true;
     }
 }
 
@@ -246,7 +277,8 @@ fn fork_029() {
 #[deps(T_030: T_000)]
 fn fork_030() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[30] = true;
     }
 }
 
@@ -254,7 +286,8 @@ fn fork_030() {
 #[deps(T_031: T_000)]
 fn fork_031() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[31] = true;
     }
 }
 
@@ -262,7 +295,8 @@ fn fork_031() {
 #[deps(T_032: T_000)]
 fn fork_032() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[32] = true;
     }
 }
 
@@ -270,7 +304,8 @@ fn fork_032() {
 #[deps(T_033: T_000)]
 fn fork_033() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[33] = true;
     }
 }
 
@@ -278,7 +313,8 @@ fn fork_033() {
 #[deps(T_034: T_000)]
 fn fork_034() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[34] = true;
     }
 }
 
@@ -286,7 +322,8 @@ fn fork_034() {
 #[deps(T_035: T_000)]
 fn fork_035() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[35] = true;
     }
 }
 
@@ -294,7 +331,8 @@ fn fork_035() {
 #[deps(T_036: T_000)]
 fn fork_036() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[36] = true;
     }
 }
 
@@ -302,7 +340,8 @@ fn fork_036() {
 #[deps(T_037: T_000)]
 fn fork_037() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[37] = true;
     }
 }
 
@@ -310,7 +349,8 @@ fn fork_037() {
 #[deps(T_038: T_000)]
 fn fork_038() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[38] = true;
     }
 }
 
@@ -318,7 +358,8 @@ fn fork_038() {
 #[deps(T_039: T_000)]
 fn fork_039() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[39] = true;
     }
 }
 
@@ -326,7 +367,8 @@ fn fork_039() {
 #[deps(T_040: T_000)]
 fn fork_040() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[40] = true;
     }
 }
 
@@ -334,7 +376,8 @@ fn fork_040() {
 #[deps(T_041: T_000)]
 fn fork_041() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[41] = true;
     }
 }
 
@@ -342,7 +385,8 @@ fn fork_041() {
 #[deps(T_042: T_000)]
 fn fork_042() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[42] = true;
     }
 }
 
@@ -350,7 +394,8 @@ fn fork_042() {
 #[deps(T_043: T_000)]
 fn fork_043() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[43] = true;
     }
 }
 
@@ -358,7 +403,8 @@ fn fork_043() {
 #[deps(T_044: T_000)]
 fn fork_044() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[44] = true;
     }
 }
 
@@ -366,7 +412,8 @@ fn fork_044() {
 #[deps(T_045: T_000)]
 fn fork_045() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[45] = true;
     }
 }
 
@@ -374,7 +421,8 @@ fn fork_045() {
 #[deps(T_046: T_000)]
 fn fork_046() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[46] = true;
     }
 }
 
@@ -382,7 +430,8 @@ fn fork_046() {
 #[deps(T_047: T_000)]
 fn fork_047() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[47] = true;
     }
 }
 
@@ -390,7 +439,8 @@ fn fork_047() {
 #[deps(T_048: T_000)]
 fn fork_048() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[48] = true;
     }
 }
 
@@ -398,7 +448,8 @@ fn fork_048() {
 #[deps(T_049: T_000)]
 fn fork_049() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[49] = true;
     }
 }
 
@@ -406,7 +457,8 @@ fn fork_049() {
 #[deps(T_050: T_000)]
 fn fork_050() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[50] = true;
     }
 }
 
@@ -414,7 +466,8 @@ fn fork_050() {
 #[deps(T_051: T_000)]
 fn fork_051() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[51] = true;
     }
 }
 
@@ -422,7 +475,8 @@ fn fork_051() {
 #[deps(T_052: T_000)]
 fn fork_052() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[52] = true;
     }
 }
 
@@ -430,7 +484,8 @@ fn fork_052() {
 #[deps(T_053: T_000)]
 fn fork_053() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[53] = true;
     }
 }
 
@@ -438,7 +493,8 @@ fn fork_053() {
 #[deps(T_054: T_000)]
 fn fork_054() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[54] = true;
     }
 }
 
@@ -446,7 +502,8 @@ fn fork_054() {
 #[deps(T_055: T_000)]
 fn fork_055() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[55] = true;
     }
 }
 
@@ -454,7 +511,8 @@ fn fork_055() {
 #[deps(T_056: T_000)]
 fn fork_056() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[56] = true;
     }
 }
 
@@ -462,7 +520,8 @@ fn fork_056() {
 #[deps(T_057: T_000)]
 fn fork_057() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[57] = true;
     }
 }
 
@@ -470,7 +529,8 @@ fn fork_057() {
 #[deps(T_058: T_000)]
 fn fork_058() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[58] = true;
     }
 }
 
@@ -478,7 +538,8 @@ fn fork_058() {
 #[deps(T_059: T_000)]
 fn fork_059() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[59] = true;
     }
 }
 
@@ -486,7 +547,8 @@ fn fork_059() {
 #[deps(T_060: T_000)]
 fn fork_060() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[60] = true;
     }
 }
 
@@ -494,7 +556,8 @@ fn fork_060() {
 #[deps(T_061: T_000)]
 fn fork_061() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[61] = true;
     }
 }
 
@@ -502,7 +565,8 @@ fn fork_061() {
 #[deps(T_062: T_000)]
 fn fork_062() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[62] = true;
     }
 }
 
@@ -510,7 +574,8 @@ fn fork_062() {
 #[deps(T_063: T_000)]
 fn fork_063() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[63] = true;
     }
 }
 
@@ -518,7 +583,8 @@ fn fork_063() {
 #[deps(T_064: T_000)]
 fn fork_064() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[64] = true;
     }
 }
 
@@ -526,7 +592,8 @@ fn fork_064() {
 #[deps(T_065: T_000)]
 fn fork_065() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[65] = true;
     }
 }
 
@@ -534,7 +601,8 @@ fn fork_065() {
 #[deps(T_066: T_000)]
 fn fork_066() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[66] = true;
     }
 }
 
@@ -542,7 +610,8 @@ fn fork_066() {
 #[deps(T_067: T_000)]
 fn fork_067() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[67] = true;
     }
 }
 
@@ -550,7 +619,8 @@ fn fork_067() {
 #[deps(T_068: T_000)]
 fn fork_068() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[68] = true;
     }
 }
 
@@ -558,7 +628,8 @@ fn fork_068() {
 #[deps(T_069: T_000)]
 fn fork_069() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[69] = true;
     }
 }
 
@@ -566,7 +637,8 @@ fn fork_069() {
 #[deps(T_070: T_000)]
 fn fork_070() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[70] = true;
     }
 }
 
@@ -574,7 +646,8 @@ fn fork_070() {
 #[deps(T_071: T_000)]
 fn fork_071() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[71] = true;
     }
 }
 
@@ -582,7 +655,8 @@ fn fork_071() {
 #[deps(T_072: T_000)]
 fn fork_072() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[72] = true;
     }
 }
 
@@ -590,7 +664,8 @@ fn fork_072() {
 #[deps(T_073: T_000)]
 fn fork_073() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[73] = true;
     }
 }
 
@@ -598,7 +673,8 @@ fn fork_073() {
 #[deps(T_074: T_000)]
 fn fork_074() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[74] = true;
     }
 }
 
@@ -606,7 +682,8 @@ fn fork_074() {
 #[deps(T_075: T_000)]
 fn fork_075() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[75] = true;
     }
 }
 
@@ -614,7 +691,8 @@ fn fork_075() {
 #[deps(T_076: T_000)]
 fn fork_076() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[76] = true;
     }
 }
 
@@ -622,7 +700,8 @@ fn fork_076() {
 #[deps(T_077: T_000)]
 fn fork_077() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[77] = true;
     }
 }
 
@@ -630,7 +709,8 @@ fn fork_077() {
 #[deps(T_078: T_000)]
 fn fork_078() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[78] = true;
     }
 }
 
@@ -638,7 +718,8 @@ fn fork_078() {
 #[deps(T_079: T_000)]
 fn fork_079() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[79] = true;
     }
 }
 
@@ -646,7 +727,8 @@ fn fork_079() {
 #[deps(T_080: T_000)]
 fn fork_080() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[80] = true;
     }
 }
 
@@ -654,7 +736,8 @@ fn fork_080() {
 #[deps(T_081: T_000)]
 fn fork_081() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[81] = true;
     }
 }
 
@@ -662,7 +745,8 @@ fn fork_081() {
 #[deps(T_082: T_000)]
 fn fork_082() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[82] = true;
     }
 }
 
@@ -670,7 +754,8 @@ fn fork_082() {
 #[deps(T_083: T_000)]
 fn fork_083() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[83] = true;
     }
 }
 
@@ -678,7 +763,8 @@ fn fork_083() {
 #[deps(T_084: T_000)]
 fn fork_084() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[84] = true;
     }
 }
 
@@ -686,7 +772,8 @@ fn fork_084() {
 #[deps(T_085: T_000)]
 fn fork_085() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[85] = true;
     }
 }
 
@@ -694,7 +781,8 @@ fn fork_085() {
 #[deps(T_086: T_000)]
 fn fork_086() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[86] = true;
     }
 }
 
@@ -702,7 +790,8 @@ fn fork_086() {
 #[deps(T_087: T_000)]
 fn fork_087() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[87] = true;
     }
 }
 
@@ -710,7 +799,8 @@ fn fork_087() {
 #[deps(T_088: T_000)]
 fn fork_088() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[88] = true;
     }
 }
 
@@ -718,7 +808,8 @@ fn fork_088() {
 #[deps(T_089: T_000)]
 fn fork_089() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[89] = true;
     }
 }
 
@@ -726,7 +817,8 @@ fn fork_089() {
 #[deps(T_090: T_000)]
 fn fork_090() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[90] = true;
     }
 }
 
@@ -734,7 +826,8 @@ fn fork_090() {
 #[deps(T_091: T_000)]
 fn fork_091() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[91] = true;
     }
 }
 
@@ -742,7 +835,8 @@ fn fork_091() {
 #[deps(T_092: T_000)]
 fn fork_092() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[92] = true;
     }
 }
 
@@ -750,7 +844,8 @@ fn fork_092() {
 #[deps(T_093: T_000)]
 fn fork_093() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[93] = true;
     }
 }
 
@@ -758,7 +853,8 @@ fn fork_093() {
 #[deps(T_094: T_000)]
 fn fork_094() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[94] = true;
     }
 }
 
@@ -766,7 +862,8 @@ fn fork_094() {
 #[deps(T_095: T_000)]
 fn fork_095() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[95] = true;
     }
 }
 
@@ -774,7 +871,8 @@ fn fork_095() {
 #[deps(T_096: T_000)]
 fn fork_096() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[96] = true;
     }
 }
 
@@ -782,7 +880,8 @@ fn fork_096() {
 #[deps(T_097: T_000)]
 fn fork_097() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[97] = true;
     }
 }
 
@@ -790,7 +889,8 @@ fn fork_097() {
 #[deps(T_098: T_000)]
 fn fork_098() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[98] = true;
     }
 }
 
@@ -798,7 +898,8 @@ fn fork_098() {
 #[deps(T_099: T_000)]
 fn fork_099() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[99] = true;
     }
 }
 
@@ -806,7 +907,8 @@ fn fork_099() {
 #[deps(T_100: T_000)]
 fn fork_100() {
     unsafe {
-        assert!(ROOT);
+        assert!(LEAF[0]);
+        LEAF[100] = true;
     }
 }
 

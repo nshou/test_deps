@@ -32,24 +32,27 @@ def gen_nrm_serial(n="100"):
 def gen_nrm_fork(n="100"):
     print(textwrap.dedent("""\
         use test_deps::deps;
-        static mut ROOT: bool = false;
+        static mut LEAF: [bool; {n}] = [false; {n}];
 
         #[test]
         #[deps(T_000)]
-        fn fork_000() {
-            unsafe {
-                assert!(!ROOT);
-                ROOT = true;
-            }
-        }
-    """))
+        fn fork_000() {{
+            unsafe {{
+                for l in &LEAF[1..] {{
+                    assert!(!l);
+                }}
+                LEAF[0] = true;
+            }}
+        }}
+    """.format(n=int(n) + 1)))
     for i in range(int(n)):
         print(textwrap.dedent(f"""\
             #[test]
             #[deps(T_{i+1:03d}: T_000)]
             fn fork_{i+1:03d}() {{
                 unsafe {{
-                    assert!(ROOT);
+                    assert!(LEAF[0]);
+                    LEAF[{i+1}] = true;
                 }}
             }}
         """))
