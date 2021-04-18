@@ -85,7 +85,7 @@ def gen_nrm_merge(n="100"):
             }}
         """))
 
-def gen_nrm_nn(f="20", d="5"):
+def gen_nrm_neural_network(f="20", d="5"):
     f = int(f)
     d = int(d)
     print(textwrap.dedent("""\
@@ -94,7 +94,7 @@ def gen_nrm_nn(f="20", d="5"):
 
         #[test]
         #[deps(T_000: {dep})]
-        fn nn_000() {{
+        fn neural_network_000() {{
             let mut input = 0;
             let pos = {d} % 2;
             unsafe {{
@@ -109,7 +109,7 @@ def gen_nrm_nn(f="20", d="5"):
         print(textwrap.dedent("""\
             #[test]
             #[deps(T_{me})]
-            fn nn_{me}() {{
+            fn neural_network_{me}() {{
                 unsafe {{
                     for n in &N[..{f}] {{
                         assert_eq!(0, *n);
@@ -123,7 +123,7 @@ def gen_nrm_nn(f="20", d="5"):
             print(textwrap.dedent("""\
                 #[test]
                 #[deps(T_{me}: {dep})]
-                fn nn_{me}() {{
+                fn neural_network_{me}() {{
                     let mut input = 0;
                     let pos = {_d} % 2;
                     unsafe {{
