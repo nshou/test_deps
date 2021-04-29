@@ -1,102 +1,118 @@
 #!/usr/bin/env python3
 
 import textwrap
-import sys
 
-def gen_nrm_serial(n="100"):
+TEST_DELAY_SEC = 0.5
+
+def common_imports():
     print(textwrap.dedent("""\
+        use rand::Rng;
+        use std::{thread, time};
         use test_deps::deps;
-        static mut COUNTER: usize = 0;
+    """))
 
+def gen_serial_test(n="5"):
+    base_sleep_sec = TEST_DELAY_SEC / int(n)
+    print(textwrap.dedent("""\
+
+        static mut COUNTER_SERIAL: usize = 0;
+
+        #[deps(SERIAL_000)]
         #[test]
-        #[deps(T_000)]
         fn serial_000() {
+            thread::sleep(time::Duration::from_secs_f64(%f * rand::thread_rng().gen::<f64>()));
             unsafe {
-                assert_eq!(0, COUNTER);
-                COUNTER = COUNTER + 1;
+                assert_eq!(0, COUNTER_SERIAL);
+                COUNTER_SERIAL = COUNTER_SERIAL + 1;
             }
         }
-    """))
+    """ % base_sleep_sec))
     for i in range(int(n)):
         print(textwrap.dedent(f"""\
+            #[deps(SERIAL_{i+1:03d}: SERIAL_{i:03d})]
             #[test]
-            #[deps(T_{i+1:03d}: T_{i:03d})]
             fn serial_{i+1:03d}() {{
+                thread::sleep(time::Duration::from_secs_f64({base_sleep_sec:f} * rand::thread_rng().gen::<f64>()));
                 unsafe {{
-                    assert_eq!({i+1}, COUNTER);
-                    COUNTER = COUNTER + 1;
+                    assert_eq!({i+1}, COUNTER_SERIAL);
+                    COUNTER_SERIAL = COUNTER_SERIAL + 1;
                 }}
             }}
         """))
 
-def gen_nrm_fork(n="100"):
+def gen_fork_test(n="5"):
     print(textwrap.dedent("""\
-        use test_deps::deps;
-        static mut LEAF: [bool; {n}] = [false; {n}];
 
+        static mut LEAF_FORK: [bool; {n}] = [false; {n}];
+
+        #[deps(FORK_000)]
         #[test]
-        #[deps(T_000)]
         fn fork_000() {{
+            thread::sleep(time::Duration::from_secs_f64({s}));
             unsafe {{
-                for l in &LEAF[1..] {{
+                for l in &LEAF_FORK[1..] {{
                     assert!(!l);
                 }}
-                LEAF[0] = true;
+                LEAF_FORK[0] = true;
             }}
         }}
-    """.format(n=int(n) + 1)))
+    """.format(n=int(n) + 1, s=TEST_DELAY_SEC)))
     for i in range(int(n)):
         print(textwrap.dedent(f"""\
+            #[deps(FORK_{i+1:03d}: FORK_000)]
             #[test]
-            #[deps(T_{i+1:03d}: T_000)]
             fn fork_{i+1:03d}() {{
                 unsafe {{
-                    assert!(LEAF[0]);
-                    LEAF[{i+1}] = true;
+                    assert!(LEAF_FORK[0]);
+                    LEAF_FORK[{i+1}] = true;
                 }}
             }}
         """))
 
-def gen_nrm_merge(n="100"):
+def gen_merge_test(n="5"):
+    base_sleep_sec = TEST_DELAY_SEC / int(n)
     print(textwrap.dedent("""\
-        use test_deps::deps;
-        static mut LEAF: [bool; {n}] = [false; {n}];
 
+        static mut LEAF_MERGE: [bool; {n}] = [false; {n}];
+
+        #[deps(MERGE_000: {d})]
         #[test]
-        #[deps(T_000: {d})]
         fn merge_000() {{
             unsafe {{
-                for l in &LEAF[1..] {{
+                for l in &LEAF_MERGE[1..] {{
                     assert!(l);
                 }}
-                LEAF[0] = true;
+                LEAF_MERGE[0] = true;
             }}
         }}
-    """.format(n=int(n) + 1, d=" ".join(["T_%03d" % (i + 1) for i in range(int(n))]))))
+    """.format(n=int(n) + 1, d=" ".join(["MERGE_%03d" % (i + 1) for i in range(int(n))]))))
     for i in range(int(n)):
         print(textwrap.dedent(f"""\
+            #[deps(MERGE_{i+1:03d})]
             #[test]
-            #[deps(T_{i+1:03d})]
             fn merge_{i+1:03d}() {{
+                thread::sleep(time::Duration::from_secs_f64({base_sleep_sec:f} * rand::thread_rng().gen::<f64>()));
                 unsafe {{
-                    assert!(!LEAF[0]);
-                    LEAF[{i+1}] = true;
+                    assert!(!LEAF_MERGE[0]);
+                    LEAF_MERGE[{i+1}] = true;
                 }}
             }}
         """))
 
-def gen_nrm_neural_network(f="20", d="5"):
+def gen_neural_network(f="5", d="4"):
     f = int(f)
     d = int(d)
+    base_sleep_sec = TEST_DELAY_SEC / (f * d)
     print(textwrap.dedent("""\
-        use test_deps::deps;
+
         static mut N: [usize; {f_2}] = [0; {f_2}];
 
+        #[deps(NN_000: {dep})]
         #[test]
-        #[deps(T_000: {dep})]
         fn neural_network_000() {{
             let mut input = 0;
             let pos = {d} % 2;
+            thread::sleep(time::Duration::from_secs_f64({s:f} * rand::thread_rng().gen::<f64>()));
             unsafe {{
                 for n in &N[(pos * {f})..((pos + 1) * {f})] {{
                     input = input + n;
@@ -104,12 +120,13 @@ def gen_nrm_neural_network(f="20", d="5"):
             }}
             assert_eq!({o}, input);
         }}
-    """.format(f=f, f_2=f*2, d=d, dep=" ".join(["T_%03d" % i for i in range((d - 1) * f + 1, d * f + 1)]), o=f**d)))
+    """.format(f=f, f_2=f*2, d=d, dep=" ".join(["NN_%03d" % i for i in range((d - 1) * f + 1, d * f + 1)]), o=f**d, s=base_sleep_sec)))
     for _f in range(f):
         print(textwrap.dedent("""\
+            #[deps(NN_{me})]
             #[test]
-            #[deps(T_{me})]
             fn neural_network_{me}() {{
+                thread::sleep(time::Duration::from_secs_f64({s:f} * rand::thread_rng().gen::<f64>()));
                 unsafe {{
                     for n in &N[..{f}] {{
                         assert_eq!(0, *n);
@@ -117,15 +134,16 @@ def gen_nrm_neural_network(f="20", d="5"):
                     N[{f} + {_f}] = 1;
                 }}
             }}
-        """.format(me="%03d" % (_f + 1), f=f, _f=_f)))
+        """.format(me="%03d" % (_f + 1), f=f, _f=_f, s=base_sleep_sec)))
     for _d in range(1, d):
         for _f in range(f):
             print(textwrap.dedent("""\
+                #[deps(NN_{me}: {dep})]
                 #[test]
-                #[deps(T_{me}: {dep})]
                 fn neural_network_{me}() {{
                     let mut input = 0;
                     let pos = {_d} % 2;
+                    thread::sleep(time::Duration::from_secs_f64({s:f} * rand::thread_rng().gen::<f64>()));
                     unsafe {{
                         for n in &N[(pos * {f})..((pos + 1) * {f})] {{
                             input = input + n;
@@ -136,12 +154,10 @@ def gen_nrm_neural_network(f="20", d="5"):
                         N[(pos ^ 1) * {f} + {_f}] = {o};
                     }}
                 }}
-            """.format(me="%03d" % (_d * f + _f + 1), dep=" ".join(["T_%03d" % i for i in range((_d - 1) * f + 1, _d * f + 1)]), _d=_d, f=f, _f=_f, o=f**_d)))
+            """.format(me="%03d" % (_d * f + _f + 1), dep=" ".join(["NN_%03d" % i for i in range((_d - 1) * f + 1, _d * f + 1)]), _d=_d, f=f, _f=_f, o=f**_d, s=base_sleep_sec)))
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        fs = [x[0] for x in globals().items() if callable(x[1]) and x[0].startswith("gen_")]
-        for f in sorted(fs):
-            print(f[len("gen_"):])
-    else:
-        globals()["gen_%s" % sys.argv[1]](*sys.argv[2:])
+    common_imports()
+    fs = [x[0] for x in globals().items() if callable(x[1]) and x[0].startswith("gen_")]
+    for f in fs:
+        globals()[f]()
