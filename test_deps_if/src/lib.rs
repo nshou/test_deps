@@ -8,7 +8,9 @@ pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
     let args = proc_macro2::TokenStream::from(args);
     let input = proc_macro2::TokenStream::from(input);
 
-    let arg_tokens = verify_args_text(args);
+    // TODO: proc_macro2::TokenStream impls only into_iter(self).
+    //       Not clone but borrow it once iter(&self) implemented.
+    let arg_tokens = verify_args_text(args.clone());
     let (target, prereqs) = verify_args_format(&arg_tokens);
 
     let mut ast: ItemFn = syn::parse2(input).unwrap();
@@ -31,13 +33,22 @@ pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
     }};
     *ast.block = body_new;
 
-    let mut attrs = ast.attrs;
-    attrs.retain(should_retain);
-    ast.attrs = attrs;
-
-    let gen = quote::quote! {
+    let mut gen = quote::quote! {
         #ast
     };
+
+    if is_ignored_test(&ast.attrs) {
+        let dummy_fn = format!("__dummy__{}", ast.sig.ident);
+        let dummy_fn_ident = proc_macro2::Ident::new(&dummy_fn, proc_macro2::Span::call_site());
+        gen = quote::quote! {
+            #[deps(#args)]
+            #[test]
+            fn #dummy_fn_ident(){}
+
+            #gen
+        };
+    }
+
     gen.into()
 }
 
@@ -116,13 +127,15 @@ fn verify_args_format(tokens: &Vec<String>) -> (&String, &[String]) {
     (target, prereqs)
 }
 
-fn should_retain(attr: &Attribute) -> bool {
-    if let Ok(m) = attr.parse_meta() {
-        let p = m.path();
-        !(p.is_ident("ignore") || p.is_ident("should_panic"))
-    } else {
-        true
+fn is_ignored_test(attrs: &Vec<Attribute>) -> bool {
+    for attr in attrs {
+        if let Ok(m) = attr.parse_meta() {
+            if m.path().is_ident("ignore") {
+                return true;
+            }
+        }
     }
+    false
 }
 
 #[cfg(test)]
