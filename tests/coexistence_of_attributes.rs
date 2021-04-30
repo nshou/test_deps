@@ -64,3 +64,34 @@ fn with_should_panic_attribute_002() {
         COUNTER_SHOULD_PANIC_OK = COUNTER_SHOULD_PANIC_OK + 1;
     }
 }
+
+static mut BOOL_IGN_SHOULD_PANIC_OK: bool = false;
+
+#[deps(IGN_SHOULD_PANIC_OK_000)]
+#[test]
+fn with_ignore_and_should_panic_attribute_000() {
+    thread::sleep(time::Duration::from_millis(250));
+    unsafe {
+        assert!(!BOOL_IGN_SHOULD_PANIC_OK);
+        BOOL_IGN_SHOULD_PANIC_OK = true;
+    }
+}
+
+#[deps(IGN_SHOULD_PANIC_OK_001: IGN_SHOULD_PANIC_OK_000)]
+#[ignore]
+#[should_panic]
+#[test]
+fn with_ignore_and_should_panic_attribute_001() {
+    unsafe {
+        BOOL_IGN_SHOULD_PANIC_OK = false;
+    }
+}
+
+#[deps(IGN_SHOULD_PANIC_OK_002: IGN_SHOULD_PANIC_OK_001)]
+#[test]
+fn with_ignore_and_should_panic_attribute_002() {
+    unsafe {
+        assert!(BOOL_IGN_SHOULD_PANIC_OK);
+        BOOL_IGN_SHOULD_PANIC_OK = false;
+    }
+}
