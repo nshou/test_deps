@@ -28,3 +28,39 @@ fn ignore_attribute_satisfies_target_immediately_002() {
         BOOL_IGN_OK = false;
     }
 }
+
+static mut COUNTER_SHOULD_PANIC_OK: usize = 0;
+
+#[deps(SHOULD_PANIC_OK_000)]
+#[test]
+fn with_should_panic_attribute_000() {
+    unsafe {
+        assert_eq!(0, COUNTER_SHOULD_PANIC_OK);
+        COUNTER_SHOULD_PANIC_OK = COUNTER_SHOULD_PANIC_OK + 1;
+    }
+}
+
+#[deps(SHOULD_PANIC_OK_001: SHOULD_PANIC_OK_000)]
+#[should_panic]
+#[test]
+fn with_should_panic_attribute_001() {
+    unsafe {
+        assert_eq!(1, COUNTER_SHOULD_PANIC_OK);
+        COUNTER_SHOULD_PANIC_OK = COUNTER_SHOULD_PANIC_OK + 1;
+    }
+    thread::sleep(time::Duration::from_millis(250));
+    panic!("this is fine");
+    #[allow(unreachable_code)]
+    unsafe {
+        COUNTER_SHOULD_PANIC_OK = COUNTER_SHOULD_PANIC_OK + 1;
+    }
+}
+
+#[deps(SOULD_PANIC_OK_002: SHOULD_PANIC_OK_001)]
+#[test]
+fn with_should_panic_attribute_002() {
+    unsafe {
+        assert_eq!(2, COUNTER_SHOULD_PANIC_OK);
+        COUNTER_SHOULD_PANIC_OK = COUNTER_SHOULD_PANIC_OK + 1;
+    }
+}
