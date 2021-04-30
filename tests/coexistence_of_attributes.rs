@@ -44,11 +44,11 @@ fn with_should_panic_attribute_000() {
 #[should_panic]
 #[test]
 fn with_should_panic_attribute_001() {
+    thread::sleep(time::Duration::from_millis(250));
     unsafe {
         assert_eq!(1, COUNTER_SHOULD_PANIC_OK);
         COUNTER_SHOULD_PANIC_OK = COUNTER_SHOULD_PANIC_OK + 1;
     }
-    thread::sleep(time::Duration::from_millis(250));
     panic!("this is fine");
     #[allow(unreachable_code)]
     unsafe {
