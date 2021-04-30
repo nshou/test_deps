@@ -5,7 +5,7 @@ static mut BOOL_IGN_OK: bool = false;
 
 #[deps(IGN_OK_000)]
 #[test]
-fn ignore_attribute_satisfies_target_immediately_000() {
+fn with_ignore_attribute_000() {
     thread::sleep(time::Duration::from_millis(250));
     unsafe {
         assert!(!BOOL_IGN_OK);
@@ -16,13 +16,16 @@ fn ignore_attribute_satisfies_target_immediately_000() {
 #[deps(IGN_OK_001: IGN_OK_000)]
 #[ignore]
 #[test]
-fn ignore_attribute_satisfies_target_immediately_001() {
+fn with_ignore_attribute_001() {
+    unsafe {
+        BOOL_IGN_OK = false;
+    }
     panic!("you should not come here");
 }
 
 #[deps(IGN_OK_002: IGN_OK_001)]
 #[test]
-fn ignore_attribute_satisfies_target_immediately_002() {
+fn with_ignore_attribute_002() {
     unsafe {
         assert!(BOOL_IGN_OK);
         BOOL_IGN_OK = false;
