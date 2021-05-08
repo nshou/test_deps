@@ -28,7 +28,7 @@ fn ret_result_001() -> Result<(), ()> {
 #[deps(RET_RESULT_002: RET_RESULT_001)]
 #[test]
 fn ret_result_002() -> Result<(), ()> {
-    thread::sleep(time::Duration::from_secs_f64(0.05));
+    thread::sleep(time::Duration::from_secs_f64(0.025));
     unsafe {
         assert_eq!(2, COUNTER_RET_RESULT);
         COUNTER_RET_RESULT = COUNTER_RET_RESULT + 1;
