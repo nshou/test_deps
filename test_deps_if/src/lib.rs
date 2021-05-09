@@ -204,4 +204,84 @@ mod tests {
             (&one_tgt_two_prqs[0], &one_tgt_two_prqs[2..])
         );
     }
+
+    #[test]
+    #[should_panic(expected = "Illegal format: Missing target name")]
+    fn invalid_tokens_empty() {
+        verify_args_format(&vec![]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Illegal format: Missing target name")]
+    fn invalid_tokens_single_colon() {
+        verify_args_format(&vec![String::from(":")]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Illegal format: Missing prereq names")]
+    fn invalid_tokens_no_prereq() {
+        verify_args_format(&vec![String::from("a"), String::from(":")]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Illegal format: Missing target name")]
+    fn invalid_tokens_no_target() {
+        verify_args_format(&vec![String::from(":"), String::from("a")]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Illegal format: Target name should appear only once")]
+    fn invalid_tokens_double_targets() {
+        verify_args_format(&vec![String::from("a"), String::from("b")]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Illegal format: Separator ':' should appear at most once")]
+    fn invalid_tokens_double_colons() {
+        verify_args_format(&vec![String::from(":"), String::from(":")]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Illegal format: Target name should appear only once")]
+    fn invalid_tokens_double_targets_with_prereq() {
+        verify_args_format(&vec![
+            String::from("a"),
+            String::from("b"),
+            String::from(":"),
+            String::from("c"),
+        ]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Illegal format: Separator ':' should appear at most once")]
+    fn invalid_tokens_two_colons() {
+        verify_args_format(&vec![
+            String::from("a"),
+            String::from(":"),
+            String::from("b"),
+            String::from(":"),
+        ]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Illegal format: Duplicated prereq b")]
+    fn invalid_tokens_dup_prereqs() {
+        verify_args_format(&vec![
+            String::from("a"),
+            String::from(":"),
+            String::from("b"),
+            String::from("b"),
+        ]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Illegal format: a appears in both target and prereq")]
+    fn invalid_tokens_deps_loop() {
+        verify_args_format(&vec![
+            String::from("a"),
+            String::from(":"),
+            String::from("b"),
+            String::from("a"),
+        ]);
+    }
 }
