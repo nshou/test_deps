@@ -183,4 +183,25 @@ mod tests {
     fn invalid_name_contains_special_char() {
         verify_args_text(proc_macro2::TokenStream::from_str("a!").unwrap());
     }
+
+    #[test]
+    fn valid_tokens() {
+        let one_tgt = vec![String::from("a")];
+        let one_tgt_one_prq = vec![String::from("a"), String::from(":"), String::from("b")];
+        let one_tgt_two_prqs = vec![
+            String::from("a"),
+            String::from(":"),
+            String::from("b"),
+            String::from("c"),
+        ];
+        assert_eq!(verify_args_format(&one_tgt), (&one_tgt[0], &one_tgt[1..]));
+        assert_eq!(
+            verify_args_format(&one_tgt_one_prq),
+            (&one_tgt_one_prq[0], &one_tgt_one_prq[2..])
+        );
+        assert_eq!(
+            verify_args_format(&one_tgt_two_prqs),
+            (&one_tgt_two_prqs[0], &one_tgt_two_prqs[2..])
+        );
+    }
 }
