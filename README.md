@@ -23,7 +23,7 @@ fn test_c() {}
 
 ```rust
 // Fork
-// A ---> B
+// A -+-> B
 //    `-> C
 
 #[deps(A)]
@@ -43,6 +43,7 @@ fn test_c() {}
 // Merge
 //   A --\
 //   B --+-> C
+
 #[deps(A)]
 #[test]
 fn test_a() {}
