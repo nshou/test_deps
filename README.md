@@ -41,8 +41,8 @@ fn test_c() {}
 
 ```rust
 // Merge
-//   A --\
-//   B --+-> C
+// A --\
+// B --+-> C
 
 #[deps(A)]
 #[test]
