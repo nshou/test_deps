@@ -67,3 +67,68 @@ fn check_readiness(completed: &HashMap<String, ()>, prereqs: &Vec<String>) -> bo
     }
     true
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{thread, time};
+
+    #[test]
+    fn target_completed_no_one_is_waiting_for() {
+        target_completed(&String::from("NO_ONE_IS_WAITING")).unwrap();
+    }
+
+    #[test]
+    fn no_prereq_passes_immediately() {
+        ensure_prereqs(&vec![]).unwrap();
+    }
+
+    #[test]
+    fn wait_one_prereq() {
+        ensure_prereqs(&vec![String::from("FIRST_TARGET")]).unwrap();
+    }
+
+    #[test]
+    fn wait_two_prereqs() {
+        ensure_prereqs(&vec![
+            String::from("FIRST_TARGET"),
+            String::from("SECOND_TARGET"),
+        ])
+        .unwrap();
+    }
+
+    #[test]
+    fn first_target_completed() {
+        // ensure wait_one_prereq() and wait_two_prereqs() go first
+        thread::sleep(time::Duration::from_secs_f64(0.75));
+        target_completed(&String::from("FIRST_TARGET")).unwrap();
+    }
+
+    #[test]
+    fn second_target_completed() {
+        // ensure wait_one_prereq() and wait_two_prereqs() go first
+        thread::sleep(time::Duration::from_secs_f64(0.75));
+        target_completed(&String::from("SECOND_TARGET")).unwrap();
+    }
+
+    #[test]
+    fn prereqs_already_satisfied() {
+        // ensure target_completed_before_waiter_comes() goes first
+        thread::sleep(time::Duration::from_secs_f64(0.75));
+        ensure_prereqs(&vec![String::from("TARGET_GOING_FIRST")]).unwrap();
+    }
+
+    #[test]
+    fn target_completed_before_waiter_comes() {
+        target_completed(&String::from("TARGET_GOING_FIRST")).unwrap();
+    }
+
+    #[test]
+    #[should_panic(expected = "A target duplicated on the completed list: COMPLETES_TWICE")]
+    fn target_completed_twice_unexpectedly() {
+        if let Err(_) = target_completed(&String::from("COMPLETES_TWICE")) {
+            panic!("should not panic here");
+        }
+        target_completed(&String::from("COMPLETES_TWICE")).unwrap();
+    }
+}
