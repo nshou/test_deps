@@ -1,3 +1,5 @@
+//! `test_deps` allows developers to define dependencies among tests.
+
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::sync::{Arc, Condvar, Mutex, PoisonError};
@@ -11,6 +13,7 @@ lazy_static! {
     };
 }
 
+#[doc(hidden)]
 #[derive(Debug)]
 pub enum TestDepsHelperError {
     ThreadSync(String),
@@ -24,6 +27,7 @@ impl<T> From<PoisonError<T>> for TestDepsHelperError {
     }
 }
 
+#[doc(hidden)]
 pub fn target_completed(target: &String) -> Result<(), TestDepsHelperError> {
     let mut reg = TEST_DEPS_REG.lock()?;
     if reg.0.insert(target.clone(), ()).is_some() {
@@ -41,6 +45,7 @@ pub fn target_completed(target: &String) -> Result<(), TestDepsHelperError> {
     }
 }
 
+#[doc(hidden)]
 pub fn ensure_prereqs(prereqs: &Vec<String>) -> Result<(), TestDepsHelperError> {
     let mut reg = TEST_DEPS_REG.lock()?;
     if !check_readiness(&reg.0, prereqs) {
