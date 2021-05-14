@@ -1,8 +1,35 @@
+//! A helper crate for `test_deps`
+
 use proc_macro::TokenStream;
 use quote;
 use std::collections::HashMap;
 use syn::{self, Attribute, Block, ItemFn};
 
+/// Defines the test dependency
+///
+/// ## Argument
+/// This macro takes GNU Make-like syntax as its argument that is described as:
+/// ```
+/// target [: prereq_0 [prereq_1 ... prereq_n] ]
+/// ```
+/// *Target* is the alias of the test that the macro is applied to. *Prereq_k* are the aliases that the
+/// *target* waits for. It is guaranteed that the *target* only begins after all the *prereq_k* finish.
+/// For example, `#[deps(A)]` defines a test alias *A* that has no prerequisites, which means *A* immediately
+/// starts when you hit `cargo test`. `#[deps(A: B C)]` is another example where *A* waits until *B* and *C*
+/// complete. Note that this macro doesn't care whether the tests succeeded or failed. In the example of
+/// `#[deps(A: B C)]`, *A* will begin even if *B* and *C* failed in their tests.
+///
+/// The available characters for *target* and *prereq* are `a-zA-Z0-9` and underscore (`_`). It may not
+/// start with a digit.
+///
+/// ## Panic
+/// ### At compile time
+/// - Unsupported character is used for *target* or *prereq*
+/// - Argument is not legally formatted
+/// - Duplicated *prereq* alias is specified
+/// - Same alias appears in both *target* and *prereq*
+/// ### At run time
+/// - *Target* with same alias completed twice
 #[proc_macro_attribute]
 pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
     let args = proc_macro2::TokenStream::from(args);
