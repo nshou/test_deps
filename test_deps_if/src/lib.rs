@@ -9,7 +9,7 @@ use syn::{self, Attribute, Block, ItemFn};
 ///
 /// ## Argument
 /// This macro takes GNU Make-like syntax as its argument that is described as:
-/// ```
+/// ```notrust
 /// target [: prereq_0 [prereq_1 ... prereq_n] ]
 /// ```
 /// *Target* is the alias of the test that the macro is applied to. *Prereq_k* are the aliases that the
