@@ -13,7 +13,7 @@ use syn::{self, Attribute, Block, ItemFn};
 /// target [: prereq_0 [prereq_1 ... prereq_n] ]
 /// ```
 /// *Target* is the alias of the test that the macro is applied to. *Prereq_k* are the aliases that the
-/// *target* waits for. It is guaranteed that the *target* only begins after all the *prereq_k* finish.
+/// *target* waits for. It is guaranteed that the *target* begins only after all the *prereq_k* finish.
 /// For example, `#[deps(A)]` defines a test alias *A* that has no prerequisites, which means *A* immediately
 /// starts when you hit `cargo test`. `#[deps(A: B C)]` is another example where *A* waits until *B* and *C*
 /// complete. Note that this macro doesn't care whether the tests succeeded or failed. In the example of
@@ -26,10 +26,20 @@ use syn::{self, Attribute, Block, ItemFn};
 /// ### At compile time
 /// - Unsupported character is used for *target* or *prereq*
 /// - Argument is not legally formatted
-/// - Duplicated *prereq* alias is specified
-/// - Same alias appears in both *target* and *prereq*
+/// - Duplicated *prereq* alias is specified for a test
+/// - Same alias appears in both *target* and *prereq* for a test
 /// ### At run time
 /// - *Target* with same alias completed twice
+///
+/// ## Example
+/// You can combine other testing macros.
+/// ```notrust
+/// #[deps(A)]
+/// #[ignore]
+/// #[should_panic]
+/// #[test]
+/// fn some_test() {}
+/// ```
 #[proc_macro_attribute]
 pub fn deps(args: TokenStream, input: TokenStream) -> TokenStream {
     let args = proc_macro2::TokenStream::from(args);
