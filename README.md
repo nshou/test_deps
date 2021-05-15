@@ -74,6 +74,10 @@ use test_deps::deps;
 
 to your test module.
 
+## Detailed Spec
+
+See [docs.rs](https://docs.rs/test_deps).
+
 ## License
 
 MIT. See COPYING.
