@@ -81,3 +81,7 @@ See [docs.rs](https://docs.rs/test_deps).
 ## License
 
 MIT. See COPYING.
+
+## Donation
+
+[Buy me a coffee](https://www.buymeacoffee.com/nshou)
