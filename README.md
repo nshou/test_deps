@@ -84,4 +84,4 @@ MIT. See COPYING.
 
 ## Donation
 
-[Buy me a coffee](https://www.buymeacoffee.com/nshou)
+[Buy me a coffee](https://www.buymeacoffee.com/nshou) ☕
