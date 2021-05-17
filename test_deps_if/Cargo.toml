@@ -3,6 +3,9 @@ proc-macro = true
 
 [package]
 name = "test_deps_if"
+license = "MIT"
+description = "A helper crate for test_deps"
+readme = "README.md"
 version = "0.1.0"
 authors = ["nshou <nshou@coronocoya.net>"]
 edition = "2018"

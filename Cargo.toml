@@ -1,5 +1,11 @@
 [package]
 name = "test_deps"
+license = "MIT"
+description = "Allows developers to define dependencies among tests"
+repository = "https://github.com/nshou/test_deps"
+readme = "README.md"
+categories = ["development-tools::testing"]
+keywords = ["dependency"]
 version = "0.1.0"
 authors = ["nshou <nshou@coronocoya.net>"]
 edition = "2018"

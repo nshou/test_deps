@@ -63,7 +63,7 @@ Add
 
 ```toml
 [dev-dependencies]
-test_deps = "1.0"
+test_deps = "0.1"
 ```
 
 to your Cargo.toml and add
