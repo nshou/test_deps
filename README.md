@@ -2,6 +2,8 @@
 
 `test_deps` allows developers to define dependencies among tests.
 
+[![Status](https://circleci.com/gh/nshou/test_deps.svg?style=svg)](https://circleci.com/gh/nshou/test_deps)
+
 ## Quick Examples
 
 ```rust
